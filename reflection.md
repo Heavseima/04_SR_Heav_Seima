@@ -1,0 +1,7 @@
+# Reflection
+
+This project helped me understand how the five stages of a basic RAG system fit together. Loading ten IT support documents made the application feel closer to a useful internal help desk. Keeping ingestion, embeddings, retrieval, and generation in separate files made the flow easier to follow. The recursive chunker kept setup steps together without requiring a framework, and printing the retrieved passages made the answers easier to check against the source documents.
+
+One part that was harder than expected was deciding what a relevant retrieval result actually means. A vector database always returns the nearest available passages, even when none of them answers the question. Similarity therefore does not prove that the answer is present. The generation prompt needs to restrict the model to the supplied context and explicitly allow it to say that the information is missing. The test questions cover mobile email, PIN reset, VPN, and Microsoft Office, while a pancake question checks the out-of-scope behavior. One successful refusal does not guarantee that every unsupported question will be handled correctly.
+
+For a future improvement, I would try re-ranking. I would retrieve a slightly larger set of candidate chunks, then use a re-ranker to select the passages that best answer the particular question. I would compare the results against the same test questions before accepting the extra complexity. For this baseline, a small local pipeline is easier to understand and explain.

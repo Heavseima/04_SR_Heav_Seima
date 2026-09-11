@@ -1,0 +1,19 @@
+[project]
+name = "basic-rag-homework"
+version = "0.1.0"
+description = "Basic local document chat with Ollama and ChromaDB"
+authors = [
+    {name = "franklin",email = "2023440heav@aupp.edu.kh"}
+]
+requires-python = ">=3.14"
+dependencies = [
+    "chromadb (>=1.5,<2)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
