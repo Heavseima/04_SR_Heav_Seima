@@ -1,6 +1,6 @@
 # Basic RAG homework
 
-A local terminal app that loads documents, splits them, embeds the chunks, retrieves the top three matches, and asks Ollama to answer using those excerpts. Plain Python: no LangChain or LlamaIndex.
+A local terminal app that loads documents, splits them, embeds the chunks, retrieves the top three matches, and asks Ollama to answer using those excerpts.
 
 ## Setup and run
 
@@ -54,12 +54,3 @@ poetry run python run_homework_tests.py
 poetry run python -m unittest discover -s tests
 ```
 
-Read the IT support documents and review the reflection draft before submission. Submit the source files, data, Poetry files, README, test log, and reflection. Do not include `.venv/` or `chroma_db/`; the index is reproducible. No web UI, Docker, paid API, or advanced RAG components are needed.
-
-## API references
-
-- [Ollama embeddings](https://docs.ollama.com/api/embed)
-- [Ollama generation](https://docs.ollama.com/api/generate)
-- [Chroma persistent client](https://docs.trychroma.com/reference/python/client)
-- [Chroma querying](https://docs.trychroma.com/docs/querying-collections/query-and-get)
-- [Nomic task prefixes](https://huggingface.co/nomic-ai/nomic-embed-text-v1)
