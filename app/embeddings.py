@@ -9,3 +9,4 @@ def embed_texts(texts, is_query=False):
     inputs = [prefix + text for text in texts] if EMBED_MODEL.startswith("nomic-embed-text") else texts
     return post("embed", {"model": EMBED_MODEL, "input": inputs,
                           "truncate": False})["embeddings"]
+

@@ -18,7 +18,7 @@ Make sure Ollama is running. If needed, start `ollama serve` in a separate termi
 poetry run python -m app.demo_ollama_check
 ```
 
-Place non-empty UTF-8 `.txt` or `.md` files directly in `data/`. The homework guideline calls for 3–5 short documents; this repository currently includes ten IT support documents.
+Place non-empty UTF-8 `.txt` or `.md` files directly in `data/`.
 
 Build the index, check the top three retrieval results, and start chatting:
 
