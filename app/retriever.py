@@ -1,6 +1,6 @@
-from config import TOP_K
-from embeddings import embed_texts
-from vector_store import search
+from app.config import TOP_K
+from app.embeddings import embed_texts
+from app.vector_store import search
 
 
 def retrieve(question, collection):

@@ -1,6 +1,6 @@
-from config import GENERATION_MODEL
-from ollama_client import post
-from retriever import format_chunks
+from app.config import GENERATION_MODEL
+from app.ollama_client import post
+from app.retriever import format_chunks
 
 def generate(question, chunks):
     return post("generate", {

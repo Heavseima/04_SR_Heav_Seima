@@ -2,7 +2,7 @@
 import json
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
-from config import OLLAMA_URL
+from app.config import OLLAMA_URL
 
 
 def post(endpoint, payload):

@@ -1,10 +1,10 @@
-from chunking import recursive_text_split
-from config import CHUNK_SIZE, CHUNK_OVERLAP
-from embeddings import embed_texts
-from generator import generate
-from ingestion import load_documents
-from retriever import retrieve
-from vector_store import save_chunks
+from app.chunking import recursive_text_split
+from app.config import CHUNK_SIZE, CHUNK_OVERLAP
+from app.embeddings import embed_texts
+from app.generator import generate
+from app.ingestion import load_documents
+from app.retriever import retrieve
+from app.vector_store import save_chunks
 
 
 def build_index(collection):

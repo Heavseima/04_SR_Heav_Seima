@@ -1,8 +1,8 @@
 import tempfile
 import unittest
 from pathlib import Path
-from chunking import recursive_text_split
-from ingestion import load_documents
+from app.chunking import recursive_text_split
+from app.ingestion import load_documents
 
 
 class BasicTests(unittest.TestCase):

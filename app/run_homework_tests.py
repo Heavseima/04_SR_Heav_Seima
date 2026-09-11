@@ -1,9 +1,9 @@
 """Record actual retrieved excerpts and model answers for the five required questions."""
 from datetime import datetime
-from config import ROOT, EMBED_MODEL, GENERATION_MODEL
-from pipeline import answer_question
-from retriever import format_chunks
-from vector_store import get_collection
+from app.config import ROOT, EMBED_MODEL, GENERATION_MODEL
+from app.pipeline import answer_question
+from app.retriever import format_chunks
+from app.vector_store import get_collection
 
 QUESTIONS = [
     "How do I set up company email on a mobile device?",

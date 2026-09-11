@@ -1,8 +1,8 @@
 """Build the index once, then chat with your documents in the terminal."""
 import argparse
-from pipeline import answer_question, build_index
-from retriever import format_chunks
-from vector_store import get_collection
+from app.pipeline import answer_question, build_index
+from app.retriever import format_chunks
+from app.vector_store import get_collection
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
         print(f"Indexed {documents} documents as {chunks} chunks.")
         return
     if not collection.count():
-        print("Run poetry run python main.py --index first.")
+        print("Run poetry run python -m app.main --index first.")
         return
     print("Chat with Documents | type exit to quit")
     while True:

@@ -1,7 +1,7 @@
 """Persist explicit embeddings in Chroma and search with cosine distance."""
 import chromadb
 from chromadb.config import Settings
-from config import DB_DIR, COLLECTION, EMBED_MODEL
+from app.config import DB_DIR, COLLECTION, EMBED_MODEL
 
 
 def get_collection():
@@ -27,7 +27,7 @@ def save_chunks(collection, chunks, vectors):
 
 def search(collection, vector, top_k=3):
     if collection.count() == 0:
-        raise ValueError("The index is empty. Run: poetry run python main.py --index")
+        raise ValueError("The index is empty. Run: poetry run python -m app.main --index")
     result = collection.query(query_embeddings=[vector], n_results=min(top_k, collection.count()),
                               include=["documents", "metadatas", "distances"])
     return [{"id": result["ids"][0][i], "text": text,

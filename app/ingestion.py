@@ -1,5 +1,5 @@
 """Load UTF-8 text/Markdown documents from one folder."""
-from config import DATA_DIR
+from app.config import DATA_DIR
 
 
 def load_documents(folder=DATA_DIR):

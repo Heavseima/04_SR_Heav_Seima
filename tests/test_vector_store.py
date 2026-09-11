@@ -1,7 +1,7 @@
 import tempfile
 import unittest
 from unittest.mock import patch
-import vector_store
+from app import vector_store
 
 
 class VectorStoreTests(unittest.TestCase):

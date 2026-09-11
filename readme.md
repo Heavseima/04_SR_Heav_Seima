@@ -1,56 +1,79 @@
-# Basic RAG homework
+# Basic RAG Homework: Chat with Documents
 
-A local terminal app that loads documents, splits them, embeds the chunks, retrieves the top three matches, and asks Ollama to answer using those excerpts.
+A local Python terminal application that implements the five stages of Naive RAG: ingestion, chunking, embedding, retrieval, and generation. It uses Ollama for local models and ChromaDB for persistent vector storage.
 
 ## Setup and run
 
-Requires Python 3.14, Poetry, and a running Ollama service. From this folder:
+Install Python 3.14, Poetry, and Ollama. Run the following commands from the project root:
 
 ```bash
 poetry install
 ollama pull llama3.2
 ollama pull nomic-embed-text
-# Run ollama serve in another terminal if Ollama is not already running.
-poetry run python demo_ollama_check.py
-poetry run python main.py --index
-poetry run python demo_vector_check.py
-poetry run python main.py
 ```
 
-Ask a question such as `How do I set up company email on a mobile device?`. Type `exit` to quit; Ctrl+C and Ctrl+D also exit. Blank input is ignored. Each question is independent; there is no conversation memory.
-
-The supplied `data/` folder contains ten IT support documents from the Doc Material for Ingest set: mobile email, PIN reset, VPN, Microsoft Office, Webex, backups, tablets, wireless networking, printers, and Android email. The ingestion code accepts any UTF-8 `.txt` or `.md` files placed directly in this folder. Run `--index` again after editing documents. Reindexing updates existing records and removes stale chunks; it does not accumulate duplicates. The database persists in `chroma_db/` between runs.
-
-## Design
-
-- **Ingestion:** load non-empty `.txt` and `.md` files directly inside `data/`.
-- **Chunking:** the existing recursive character splitter, using paragraph, newline, sentence, word, then character boundaries. Maximum 500 characters, with up to 80 characters of whole-split overlap. Paragraphs stay together when they fit, making short notes readable and keeping related facts together. Overlap is not guaranteed across recursive boundaries.
-- **Embeddings:** Ollama `nomic-embed-text`, with `search_document:` and `search_query:` prefixes.
-- **Storage:** local persistent ChromaDB; explicit embeddings and cosine distance (smaller is closer).
-- **Retrieval:** embed the question and return the top three chunks, including filename and chunk number.
-- **Generation:** Ollama `llama3.2`, temperature 0, a context-only prompt, and numbered source references. The model is instructed to say `I could not find this in your documents.` when context cannot answer. This prompt reduces unsupported answers but cannot guarantee perfect grounding.
-
-Defaults are in `config.py`. Optional environment variables: `OLLAMA_URL`, `GENERATION_MODEL`, `EMBED_MODEL`. If changing the embedding model, use a new `DB_DIR` in config and rebuild, so incompatible embeddings are never mixed. A missing model or unavailable Ollama service produces an explanatory error.
-
-## Files and homework evidence
-
-| File | Purpose |
-| --- | --- |
-| `ingestion.py`, `chunking.py` | Load and split documents |
-| `embeddings.py`, `ollama_client.py` | Local model requests |
-| `vector_store.py` | Persist and search vectors |
-| `retriever.py`, `generator.py`, `pipeline.py` | Question-to-answer flow and offline indexing |
-| `main.py` | Terminal chat and indexing command |
-| `demo_ollama_check.py` | Standalone model smoke check |
-| `demo_vector_check.py` | Standalone top-three retrieval check |
-| `run_homework_tests.py` | Record five real questions and answers |
-| `test_log.md` | Retrieved passages and generated answers |
-| `reflection.md` | 150-300 word project reflection draft |
-
-Regenerate the homework log with:
+Make sure Ollama is running. If needed, start `ollama serve` in a separate terminal. Check that both models respond:
 
 ```bash
-poetry run python run_homework_tests.py
-poetry run python -m unittest discover -s tests
+poetry run python -m app.demo_ollama_check
 ```
 
+Place non-empty UTF-8 `.txt` or `.md` files directly in `data/`. The homework guideline calls for 3–5 short documents; this repository currently includes ten IT support documents.
+
+Build the index, check the top three retrieval results, and start chatting:
+
+```bash
+poetry run python -m app.main --index
+poetry run python -m app.demo_vector_check
+poetry run python -m app.main
+```
+
+Try: `What should I do first when Microsoft Office has a problem?`
+
+The app prints the retrieved chunks, their sources, and the generated answer. Type `exit` to quit, or press Ctrl+C or Ctrl+D. Each question is processed independently, without conversation memory. Run the indexing command again after changing files in `data/`; the index updates existing chunks and removes stale entries.
+
+## Chunking strategy and model choices
+
+The app uses **recursive character splitting**, trying paragraph breaks, line breaks, sentence boundaries, and spaces before splitting individual characters. Chunks contain at most **500 characters**, with up to **80 characters of overlap**. This strategy favors natural boundaries and helps keep related instructions together while limiting the amount of text passed to the model. Overlap carries some context between chunks, but is not guaranteed across recursive boundaries.
+
+- **Embedding model:** Ollama `nomic-embed-text`, used for both chunks and questions. Inputs use `search_document:` and `search_query:` prefixes respectively.
+- **Vector database:** ChromaDB in persistent mode, stored in `chroma_db/`. Retrieval uses cosine distance to select the top three chunks; smaller distances indicate closer matches.
+- **Generation model:** Ollama `llama3.2`, with temperature set to 0. The prompt asks it to use only the retrieved excerpts, cite excerpt numbers, and say `I could not find this in your documents.` when the answer is unavailable. Answers and citations still need checking.
+
+The offline flow is **load → split → embed → store**. At query time, the app **embeds the question → retrieves chunks → generates an answer**.
+
+## Project files
+
+All application modules are in `app/`:
+
+| File | Responsibility |
+| --- | --- |
+| `ingestion.py` | Load text and Markdown files |
+| `chunking.py` | Split text into overlapping chunks |
+| `embeddings.py`, `ollama_client.py` | Request local embeddings and call Ollama |
+| `vector_store.py` | Persist vectors and search the index |
+| `retriever.py` | Embed questions and retrieve matching chunks |
+| `generator.py` | Build the prompt and generate an answer |
+| `pipeline.py` | Connect indexing and question-answering stages |
+| `main.py` | Run indexing or the terminal chat loop |
+| `config.py` | Define paths, model names, and chunking settings |
+| `demo_ollama_check.py`, `demo_vector_check.py` | Check models and retrieval separately |
+| `run_homework_tests.py` | Record five questions, retrieved chunks, and answers |
+
+Defaults are in `app/config.py`. You can override `OLLAMA_URL`, `EMBED_MODEL`, and `GENERATION_MODEL` through environment variables. If changing the embedding model, select a new `DB_DIR` in the configuration and rebuild the index.
+
+## Tests and reflection
+
+[test_log.md](test_log.md) records five questions with their retrieved chunks and generated answers: four answerable questions and one unrelated question. [reflection.md](reflection.md) discusses what worked, a difficulty observed during testing, and a proposed re-ranking improvement.
+
+To regenerate the log, first build the index and ensure Ollama is running, then run:
+
+```bash
+poetry run python -m app.run_homework_tests
+```
+
+Run the automated chunking, ingestion, and vector-store tests with:
+
+```bash
+poetry run python -m unittest discover -s tests
+```

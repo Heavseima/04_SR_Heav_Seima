@@ -1,6 +1,6 @@
 """Use the same local embedding model for documents and questions."""
-from config import EMBED_MODEL
-from ollama_client import post
+from app.config import EMBED_MODEL
+from app.ollama_client import post
 
 
 def embed_texts(texts, is_query=False):

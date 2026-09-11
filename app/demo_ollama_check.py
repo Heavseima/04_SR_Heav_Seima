@@ -1,6 +1,6 @@
 """Standalone model check; does not depend on the RAG pipeline."""
-from config import EMBED_MODEL, GENERATION_MODEL
-from ollama_client import post
+from app.config import EMBED_MODEL, GENERATION_MODEL
+from app.ollama_client import post
 
 if __name__ == "__main__":
     result = post("embed", {"model": EMBED_MODEL, "input": "Hello world"})
